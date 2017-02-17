@@ -1,14 +1,35 @@
-hash: cc4945997105aa468f1d8a168d5e8eb5064f73853f4970ae5dd1a6a521aac06a
-updated: 2017-02-16T02:40:29.744403+01:00
+hash: 6194324724a8171102ca26fda138fbd7933964bb4d0d3a78978e243ed43c36ba
+updated: 2017-02-17T18:14:20.54891818+01:00
 imports:
 - name: github.com/airbrake/gobrake
   version: 668876711219e8b0206e2994bf0a59d889c775aa
+- name: github.com/deshboard/boilerplate-service
+  version: f5734d57dd92b8549dbd67616f6f5b4ae982213e
+  subpackages:
+  - app
+- name: github.com/gorilla/context
+  version: 08b5f424b9271eedf6f9f0ce86cb9396ed337a42
+- name: github.com/gorilla/mux
+  version: 392c28fe23e1c45ddba891b0320b3b5df220beea
 - name: github.com/kelseyhightower/envconfig
   version: f611eb38b3875cc3bd991ca91c51d06446afa14c
+- name: github.com/opentracing-contrib/go-stdlib
+  version: 1de4cc2120e71f745a5810488bf64b29b6d7d9f6
+  subpackages:
+  - nethttp
+- name: github.com/opentracing/opentracing-go
+  version: 6edb48674bd9467b8e91fda004f2bd7202d60ce4
+  subpackages:
+  - ext
+  - log
 - name: github.com/sagikazarmark/healthz
   version: 53e8bd01c95dd968996af7f6e8ab52491b49ff7e
 - name: github.com/Sirupsen/logrus
   version: c078b1e43f58d563c74cebe63c85789e76ddb627
+- name: golang.org/x/net
+  version: 61557ac0112b576429a0df080e1c2cef5dfbb642
+  subpackages:
+  - context
 - name: golang.org/x/sys
   version: e24f485414aeafb646f6fca458b0bf869c0880a1
   subpackages:

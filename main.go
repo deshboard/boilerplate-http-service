@@ -1,4 +1,4 @@
-package main // import "github.com/deshboard/boilerplate-service"
+package main // import "github.com/deshboard/boilerplate-http-service"
 import (
 	"context"
 	"flag"
@@ -13,7 +13,8 @@ import (
 	"sync"
 
 	"github.com/Sirupsen/logrus"
-	"github.com/deshboard/boilerplate-service/app"
+	"github.com/deshboard/boilerplate-http-service/app"
+	opentracing "github.com/opentracing/opentracing-go"
 	"github.com/sagikazarmark/healthz"
 )
 
@@ -22,13 +23,15 @@ var (
 	config  = &app.Configuration{}
 	logger  = logrus.New()
 	closers = []io.Closer{}
+	tracer  = opentracing.GlobalTracer()
 )
 
 func main() {
 	defer shutdown()
 
 	var (
-		healthAddr = flag.String("health", "0.0.0.0:90", "Health service address.")
+		serviceAddr = flag.String("service", "0.0.0.0:80", "HTTP service address.")
+		healthAddr  = flag.String("health", "0.0.0.0:90", "Health service address.")
 	)
 	flag.Parse()
 
@@ -40,6 +43,13 @@ func main() {
 	closers = append(closers, w)
 	serverLogger := log.New(w, "", 0)
 
+	service := app.NewService()
+
+	server := &http.Server{
+		Addr:    *serviceAddr,
+		Handler: app.NewServiceHandler(service, tracer),
+	}
+
 	healthHandler, status := healthService()
 	healthServer := &http.Server{
 		Addr:     *healthAddr,
@@ -50,6 +60,7 @@ func main() {
 	errChan := make(chan error, 10)
 
 	startHTTPServer(fmt.Sprintf("%s Health", app.FriendlyServiceName), healthServer, errChan)
+	startHTTPServer(fmt.Sprintf("%s HTTP", app.FriendlyServiceName), server, errChan)
 
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)

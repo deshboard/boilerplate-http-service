@@ -2,8 +2,8 @@ package app
 
 // Service info
 const (
-	ServiceName         = "boilerplate.service"
-	FriendlyServiceName = "Boilerplate"
+	ServiceName         = "boilerplate.http.service"
+	FriendlyServiceName = "BoilerplateHTTP"
 )
 
 // Provisioned by ldflags
