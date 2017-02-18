@@ -1,4 +1,5 @@
 package main // import "github.com/deshboard/boilerplate-http-service"
+
 import (
 	"context"
 	"flag"
@@ -17,23 +18,21 @@ import (
 	"github.com/sagikazarmark/healthz"
 )
 
-// Global context
+// Global context variables
 var (
 	config  = &app.Configuration{}
 	logger  = logrus.New()
-	closers = []io.Closer{}
 	tracer  = opentracing.GlobalTracer()
-)
-
-// Flags
-var (
-	serviceAddr = flag.String("service", "0.0.0.0:80", "HTTP service address.")
-	healthAddr  = flag.String("health", "0.0.0.0:90", "Health service address.")
+	closers = []io.Closer{}
 )
 
 func main() {
 	defer shutdown()
 
+	var (
+		serviceAddr = flag.String("service", "0.0.0.0:80", "HTTP service address.")
+		healthAddr  = flag.String("health", "0.0.0.0:90", "Health service address.")
+	)
 	flag.Parse()
 
 	logger.WithFields(logrus.Fields{
@@ -46,7 +45,6 @@ func main() {
 
 	w := logger.WriterLevel(logrus.ErrorLevel)
 	closers = append(closers, w)
-	errChan := make(chan error, 10)
 
 	service := app.NewService()
 
@@ -65,6 +63,8 @@ func main() {
 	// Force closing server connections (if graceful closing fails)
 	closers = append([]io.Closer{healthServer}, closers...)
 
+	errChan := make(chan error, 10)
+
 	go func() {
 		logger.WithField("port", healthServer.Addr).Infof("%s Health service started", app.FriendlyServiceName)
 		errChan <- healthServer.ListenAndServe()
@@ -82,13 +82,14 @@ MainLoop:
 	for {
 		select {
 		case err := <-errChan:
-			// In theory this can only be nil
+			// In theory this can only be non-nil
 			if err != nil {
-				logger.Panic(err)
+				// This will be handled (logged) by shutdown
+				panic(err)
 			} else {
 				logger.Info("Error channel received non-error value")
 
-				// Break the loop, proceed with shutdown
+				// Break the loop, proceed with regular shutdown
 				break MainLoop
 			}
 		case s := <-signalChan:
@@ -132,7 +133,7 @@ MainLoop:
 	logger.WithField("service", app.ServiceName).Info("Shutting down")
 }
 
-// Panic recovery and close handler
+// Panic recovery and shutdown handler
 func shutdown() {
 	v := recover()
 	if v != nil {
