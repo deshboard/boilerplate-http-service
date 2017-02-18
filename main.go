@@ -40,7 +40,6 @@ func main() {
 		"commitHash":  app.CommitHash,
 		"buildDate":   app.BuildDate,
 		"environment": config.Environment,
-		"service":     app.ServiceName,
 	}).Printf("Starting %s service", app.FriendlyServiceName)
 
 	w := logger.WriterLevel(logrus.ErrorLevel)
@@ -130,7 +129,7 @@ MainLoop:
 	close(errChan)
 	close(signalChan)
 
-	logger.WithField("service", app.ServiceName).Info("Shutting down")
+	logger.Info("Shutting down")
 }
 
 // Panic recovery and shutdown handler
@@ -147,12 +146,4 @@ func shutdown() {
 	if v != nil {
 		panic(v)
 	}
-}
-
-// Creates the health service and the status checker
-func healthService() (http.Handler, *healthz.StatusChecker) {
-	status := healthz.NewStatusChecker(healthz.Healthy)
-	healthMux := healthz.NewHealthServiceHandler(healthz.NewCheckers(), status)
-
-	return healthMux, status
 }
