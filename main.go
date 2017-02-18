@@ -8,9 +8,8 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"syscall"
-
 	"sync"
+	"syscall"
 
 	"github.com/Sirupsen/logrus"
 	"github.com/deshboard/boilerplate-http-service/app"
@@ -26,22 +25,28 @@ var (
 	tracer  = opentracing.GlobalTracer()
 )
 
+// Flags
+var (
+	serviceAddr = flag.String("service", "0.0.0.0:80", "HTTP service address.")
+	healthAddr  = flag.String("health", "0.0.0.0:90", "Health service address.")
+)
+
 func main() {
 	defer shutdown()
 
-	var (
-		serviceAddr = flag.String("service", "0.0.0.0:80", "HTTP service address.")
-		healthAddr  = flag.String("health", "0.0.0.0:90", "Health service address.")
-	)
 	flag.Parse()
 
-	logger.Printf("Starting %s service", app.FriendlyServiceName)
-	logger.Printf("Version %s (%s) built at %s", app.Version, app.CommitHash, app.BuildDate)
-	logger.Printf("Environment: %s", config.Environment)
+	logger.WithFields(logrus.Fields{
+		"version":     app.Version,
+		"commitHash":  app.CommitHash,
+		"buildDate":   app.BuildDate,
+		"environment": config.Environment,
+		"service":     app.ServiceName,
+	}).Printf("Starting %s service", app.FriendlyServiceName)
 
-	w := logger.Writer()
+	w := logger.WriterLevel(logrus.ErrorLevel)
 	closers = append(closers, w)
-	serverLogger := log.New(w, "", 0)
+	errChan := make(chan error, 10)
 
 	service := app.NewService()
 
@@ -54,13 +59,21 @@ func main() {
 	healthServer := &http.Server{
 		Addr:     *healthAddr,
 		Handler:  healthHandler,
-		ErrorLog: serverLogger,
+		ErrorLog: log.New(w, fmt.Sprintf("%s Health service: ", app.FriendlyServiceName), 0),
 	}
 
-	errChan := make(chan error, 10)
+	// Force closing server connections (if graceful closing fails)
+	closers = append([]io.Closer{healthServer}, closers...)
 
-	startHTTPServer(fmt.Sprintf("%s Health", app.FriendlyServiceName), healthServer, errChan)
-	startHTTPServer(fmt.Sprintf("%s HTTP", app.FriendlyServiceName), server, errChan)
+	go func() {
+		logger.WithField("port", healthServer.Addr).Infof("%s Health service started", app.FriendlyServiceName)
+		errChan <- healthServer.ListenAndServe()
+	}()
+
+	go func() {
+		logger.WithField("port", server.Addr).Infof("%s service started", app.FriendlyServiceName)
+		errChan <- server.ListenAndServe()
+	}()
 
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
@@ -69,10 +82,11 @@ MainLoop:
 	for {
 		select {
 		case err := <-errChan:
+			// In theory this can only be nil
 			if err != nil {
 				logger.Panic(err)
 			} else {
-				logger.Info("Error channel received non-error")
+				logger.Info("Error channel received non-error value")
 
 				// Break the loop, proceed with shutdown
 				break MainLoop
@@ -80,16 +94,26 @@ MainLoop:
 		case s := <-signalChan:
 			logger.Println(fmt.Sprintf("Captured %v", s))
 			status.SetStatus(healthz.Unhealthy)
+
 			shutdownContext, shutdownCancel := context.WithTimeout(context.Background(), config.ShutdownTimeout)
 			defer shutdownCancel()
 
 			var wg sync.WaitGroup
-			wg.Add(1)
+			wg.Add(2)
 
 			go func() {
 				err := healthServer.Shutdown(shutdownContext)
 				if err != nil {
-					logger.Panic(err)
+					logger.Error(err)
+				}
+
+				wg.Done()
+			}()
+
+			go func() {
+				err := server.Shutdown(shutdownContext)
+				if err != nil {
+					logger.Error(err)
 				}
 
 				wg.Done()
@@ -102,19 +126,10 @@ MainLoop:
 		}
 	}
 
-	logger.Info("Shutting down")
-}
+	close(errChan)
+	close(signalChan)
 
-// Starts an HTTP server
-func startHTTPServer(name string, server *http.Server, ch chan<- error) {
-	// Force closing server connections (if graceful closing fails)
-	closers = append([]io.Closer{server}, closers...)
-
-	logger.Printf("%s service listening on %s", name, server.Addr)
-
-	go func() {
-		ch <- server.ListenAndServe()
-	}()
+	logger.WithField("service", app.ServiceName).Info("Shutting down")
 }
 
 // Panic recovery and close handler
