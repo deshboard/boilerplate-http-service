@@ -46,10 +46,10 @@ func main() {
 	closers = append(closers, w)
 
 	service := app.NewService()
-
 	server := &http.Server{
-		Addr:    *serviceAddr,
-		Handler: app.NewServiceHandler(service, tracer),
+		Addr:     *serviceAddr,
+		Handler:  app.NewServiceHandler(service, tracer),
+		ErrorLog: log.New(w, fmt.Sprintf("%s service: ", app.FriendlyServiceName), 0),
 	}
 
 	healthHandler, status := healthService()
