@@ -3,8 +3,20 @@ package main
 import (
 	"net/http"
 
+	"github.com/deshboard/boilerplate-http-service/app"
+	opentracing "github.com/opentracing/opentracing-go"
 	"github.com/sagikazarmark/healthz"
 )
+
+// Returns a new service handler
+// IMPORTANT: all routes SHOULD have a name
+func newServiceHandler(service *app.Service, tracer opentracing.Tracer) http.Handler {
+	router := app.NewRouter(tracer)
+
+	router.HandleFunc("/", service.Home).Name("index").Methods("GET")
+
+	return router
+}
 
 // Creates the health service and the status checker
 func healthService() (http.Handler, *healthz.StatusChecker) {

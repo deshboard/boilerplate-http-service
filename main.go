@@ -48,7 +48,7 @@ func main() {
 	service := app.NewService()
 	server := &http.Server{
 		Addr:     *serviceAddr,
-		Handler:  app.NewServiceHandler(service, tracer),
+		Handler:  newServiceHandler(service, tracer),
 		ErrorLog: log.New(w, fmt.Sprintf("%s service: ", app.FriendlyServiceName), 0),
 	}
 
@@ -70,7 +70,7 @@ func main() {
 	}()
 
 	go func() {
-		logger.WithField("port", server.Addr).Infof("%s service started", app.FriendlyServiceName)
+		logger.WithField("addr", server.Addr).Infof("%s service started", app.FriendlyServiceName)
 		errChan <- server.ListenAndServe()
 	}()
 
