@@ -52,7 +52,7 @@ func main() {
 		ErrorLog: log.New(w, fmt.Sprintf("%s service: ", app.FriendlyServiceName), 0),
 	}
 
-	healthHandler, status := healthService()
+	healthHandler, status := newHealthServiceHandler()
 	healthServer := &http.Server{
 		Addr:     *healthAddr,
 		Handler:  healthHandler,
