@@ -1,5 +1,5 @@
-hash: de0432d4338353b753deb1919df8824024d1c760f68c453eee1c0b4478698126
-updated: 2017-02-18T21:52:26.0617033+01:00
+hash: 8be28d710ea421ac1377e70dbe6388cb6cee246a39b60d18daf0ab94e82f1a74
+updated: 2017-02-19T23:13:15.617716648+01:00
 imports:
 - name: github.com/airbrake/gobrake
   version: 668876711219e8b0206e2994bf0a59d889c775aa
@@ -7,6 +7,12 @@ imports:
   version: f5734d57dd92b8549dbd67616f6f5b4ae982213e
   subpackages:
   - app
+- name: github.com/evalphobia/logrus_fluent
+  version: 86bb83d119886b935a52194cad48fd01815b0125
+- name: github.com/fluent/fluent-logger-golang
+  version: 28bdb662295c1b7aca09c1a4edbf9430010775a9
+  subpackages:
+  - fluent
 - name: github.com/gorilla/context
   version: 08b5f424b9271eedf6f9f0ce86cb9396ed337a42
 - name: github.com/gorilla/mux
@@ -22,10 +28,16 @@ imports:
   subpackages:
   - ext
   - log
+- name: github.com/philhofer/fwd
+  version: 98c11a7a6ec829d672b03833c3d69a7fae1ca972
 - name: github.com/sagikazarmark/healthz
   version: 53e8bd01c95dd968996af7f6e8ab52491b49ff7e
 - name: github.com/Sirupsen/logrus
   version: c078b1e43f58d563c74cebe63c85789e76ddb627
+- name: github.com/tinylib/msgp
+  version: 362bfb3384d53ae4d5dd745983a4d70b6d23628c
+  subpackages:
+  - msgp
 - name: golang.org/x/net
   version: 61557ac0112b576429a0df080e1c2cef5dfbb642
   subpackages:
