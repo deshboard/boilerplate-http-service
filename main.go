@@ -95,7 +95,6 @@ MainLoop:
 			status.SetStatus(healthz.Unhealthy)
 
 			shutdownContext, shutdownCancel := context.WithTimeout(context.Background(), config.ShutdownTimeout)
-			defer shutdownCancel()
 
 			var wg sync.WaitGroup
 			wg.Add(2)
@@ -119,6 +118,9 @@ MainLoop:
 			}()
 
 			wg.Wait()
+
+			// Cancel context if shutdown completed earlier
+			shutdownCancel()
 
 			// Break the loop, proceed with regular shutdown
 			break MainLoop
