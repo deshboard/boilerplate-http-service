@@ -59,7 +59,7 @@ func main() {
 	}
 
 	// Force closing server connections (if graceful closing fails)
-	shutdown = append([]shutdownHandler{healthServer.Close}, shutdown...)
+	shutdown = append([]shutdownHandler{server.Close, healthServer.Close}, shutdown...)
 
 	errChan := make(chan error, 10)
 
