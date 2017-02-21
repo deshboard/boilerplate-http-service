@@ -4,7 +4,6 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"io"
 	"log"
 	"net/http"
 	"os"
@@ -20,14 +19,14 @@ import (
 
 // Global context variables
 var (
-	config  = &app.Configuration{}
-	logger  = logrus.New().WithField("service", app.ServiceName) // Use logrus.FieldLogger type
-	tracer  = opentracing.GlobalTracer()
-	closers = []io.Closer{}
+	config   = &app.Configuration{}
+	logger   = logrus.New().WithField("service", app.ServiceName) // Use logrus.FieldLogger type
+	tracer   = opentracing.GlobalTracer()
+	shutdown = []shutdownHandler{}
 )
 
 func main() {
-	defer shutdown()
+	defer handleShutdown()
 
 	var (
 		serviceAddr = flag.String("service", "0.0.0.0:80", "HTTP service address.")
@@ -43,7 +42,7 @@ func main() {
 	}).Printf("Starting %s service", app.FriendlyServiceName)
 
 	w := logger.Logger.WriterLevel(logrus.ErrorLevel)
-	closers = append(closers, w)
+	shutdown = append(shutdown, w.Close)
 
 	service := app.NewService()
 	server := &http.Server{
@@ -60,7 +59,7 @@ func main() {
 	}
 
 	// Force closing server connections (if graceful closing fails)
-	closers = append([]io.Closer{healthServer}, closers...)
+	shutdown = append([]shutdownHandler{healthServer.Close}, shutdown...)
 
 	errChan := make(chan error, 10)
 
@@ -128,19 +127,32 @@ MainLoop:
 
 	close(errChan)
 	close(signalChan)
+}
 
-	logger.Info("Shutting down")
+type shutdownHandler func() error
+
+// Wraps a function withot error return type
+func shutdownFunc(fn func()) shutdownHandler {
+	return func() error {
+		fn()
+		return nil
+	}
 }
 
 // Panic recovery and shutdown handler
-func shutdown() {
+func handleShutdown() {
 	v := recover()
 	if v != nil {
 		logger.Error(v)
 	}
 
-	for _, s := range closers {
-		s.Close()
+	logger.Info("Shutting down")
+
+	for _, handler := range shutdown {
+		err := handler()
+		if err != nil {
+			logger.Error(err)
+		}
 	}
 
 	if v != nil {
