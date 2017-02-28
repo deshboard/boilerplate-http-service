@@ -13,25 +13,13 @@ import (
 
 	"github.com/Sirupsen/logrus"
 	"github.com/deshboard/boilerplate-http-service/app"
-	opentracing "github.com/opentracing/opentracing-go"
 	"github.com/sagikazarmark/healthz"
-)
-
-// Global context variables
-var (
-	config   = &app.Configuration{}
-	logger   = logrus.New().WithField("service", app.ServiceName) // Use logrus.FieldLogger type
-	tracer   = opentracing.GlobalTracer()
-	shutdown = []shutdownHandler{}
+	"github.com/sagikazarmark/serverz"
 )
 
 func main() {
-	defer handleShutdown()
+	defer shutdown.Handle()
 
-	var (
-		serviceAddr = flag.String("service", "0.0.0.0:80", "HTTP service address.")
-		healthAddr  = flag.String("health", "0.0.0.0:90", "Health service address.")
-	)
 	flag.Parse()
 
 	logger.WithFields(logrus.Fields{
@@ -42,85 +30,82 @@ func main() {
 	}).Printf("Starting %s service", app.FriendlyServiceName)
 
 	w := logger.Logger.WriterLevel(logrus.ErrorLevel)
-	shutdown = append(shutdown, w.Close)
+	shutdown.Register(w.Close)
+
+	serverManager := serverz.NewServerManager(logger)
+	errChan := make(chan error, 10)
+	signalChan := make(chan os.Signal, 1)
+
+	var debugServer serverz.Server
+	if config.Debug {
+		debugServer = &serverz.NamedServer{
+			Server: &http.Server{
+				Handler:  http.DefaultServeMux,
+				ErrorLog: log.New(w, "debug: ", 0),
+			},
+			Name: "debug",
+		}
+		shutdown.RegisterAsFirst(debugServer.Close)
+
+		go serverManager.ListenAndStartServer(debugServer, config.DebugAddr)(errChan)
+	}
 
 	service := app.NewService()
-	server := &http.Server{
-		Addr:     *serviceAddr,
-		Handler:  newServiceHandler(service, tracer),
-		ErrorLog: log.New(w, fmt.Sprintf("%s service: ", app.FriendlyServiceName), 0),
+	server := &serverz.NamedServer{
+		Server: &http.Server{
+			Handler:  newServiceHandler(service, tracer),
+			ErrorLog: log.New(w, "http: ", 0),
+		},
+		Name: "http",
 	}
 
 	healthHandler, status := newHealthServiceHandler()
-	healthServer := &http.Server{
-		Addr:     *healthAddr,
-		Handler:  healthHandler,
-		ErrorLog: log.New(w, fmt.Sprintf("%s Health service: ", app.FriendlyServiceName), 0),
+	healthServer := &serverz.NamedServer{
+		Server: &http.Server{
+			Handler:  healthHandler,
+			ErrorLog: log.New(w, "health: ", 0),
+		},
+		Name: "health",
 	}
 
-	// Force closing server connections (if graceful closing fails)
-	shutdown = append([]shutdownHandler{server.Close, healthServer.Close}, shutdown...)
+	shutdown.RegisterAsFirst(healthServer.Close, server.Close)
 
-	errChan := make(chan error, 10)
+	go serverManager.ListenAndStartServer(healthServer, config.HealthAddr)(errChan)
+	go serverManager.ListenAndStartServer(server, config.ServiceAddr)(errChan)
 
-	go func() {
-		logger.WithField("addr", healthServer.Addr).Infof("%s Health service started", app.FriendlyServiceName)
-		errChan <- healthServer.ListenAndServe()
-	}()
-
-	go func() {
-		logger.WithField("addr", server.Addr).Infof("%s service started", app.FriendlyServiceName)
-		errChan <- server.ListenAndServe()
-	}()
-
-	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
 
 MainLoop:
 	for {
 		select {
 		case err := <-errChan:
-			// In theory this can only be non-nil
-			if err != nil {
-				// This will be handled (logged) by shutdown
-				panic(err)
-			} else {
-				logger.Info("Error channel received non-error value")
-
-				// Break the loop, proceed with regular shutdown
-				break MainLoop
-			}
-		case s := <-signalChan:
-			logger.Println(fmt.Sprintf("Captured %v", s))
 			status.SetStatus(healthz.Unhealthy)
 
-			shutdownContext, shutdownCancel := context.WithTimeout(context.Background(), config.ShutdownTimeout)
+			if err != nil {
+				logger.Error(err)
+			} else {
+				logger.Warning("Error channel received non-error value")
+			}
 
-			var wg sync.WaitGroup
-			wg.Add(2)
+			// Break the loop, proceed with regular shutdown
+			break MainLoop
+		case s := <-signalChan:
+			logger.Infof(fmt.Sprintf("Captured %v", s))
+			status.SetStatus(healthz.Unhealthy)
 
-			go func() {
-				err := healthServer.Shutdown(shutdownContext)
-				if err != nil {
-					logger.Error(err)
-				}
+			ctx, cancel := context.WithTimeout(context.Background(), config.ShutdownTimeout)
+			wg := &sync.WaitGroup{}
 
-				wg.Done()
-			}()
-
-			go func() {
-				err := server.Shutdown(shutdownContext)
-				if err != nil {
-					logger.Error(err)
-				}
-
-				wg.Done()
-			}()
+			if config.Debug {
+				go serverManager.StopServer(debugServer, wg)(ctx)
+			}
+			go serverManager.StopServer(healthServer, wg)(ctx)
+			go serverManager.StopServer(server, wg)(ctx)
 
 			wg.Wait()
 
 			// Cancel context if shutdown completed earlier
-			shutdownCancel()
+			cancel()
 
 			// Break the loop, proceed with regular shutdown
 			break MainLoop
@@ -129,35 +114,4 @@ MainLoop:
 
 	close(errChan)
 	close(signalChan)
-}
-
-type shutdownHandler func() error
-
-// Wraps a function withot error return type
-func shutdownFunc(fn func()) shutdownHandler {
-	return func() error {
-		fn()
-		return nil
-	}
-}
-
-// Panic recovery and shutdown handler
-func handleShutdown() {
-	v := recover()
-	if v != nil {
-		logger.Error(v)
-	}
-
-	logger.Info("Shutting down")
-
-	for _, handler := range shutdown {
-		err := handler()
-		if err != nil {
-			logger.Error(err)
-		}
-	}
-
-	if v != nil {
-		panic(v)
-	}
 }
