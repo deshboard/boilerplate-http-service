@@ -1,5 +1,5 @@
-hash: c889163c230b88859c56ec9a087c5dc81417f4b2ad8144d76f8e89738a2a04e8
-updated: 2017-03-01T00:19:31.911688613+01:00
+hash: fbd091898b3e919f52328fac4f1b2b63f6143ac17d80968124722511a3dfcf8c
+updated: 2017-03-02T11:54:43.309732786+01:00
 imports:
 - name: github.com/airbrake/gobrake
   version: 668876711219e8b0206e2994bf0a59d889c775aa
@@ -9,6 +9,10 @@ imports:
   version: 28bdb662295c1b7aca09c1a4edbf9430010775a9
   subpackages:
   - fluent
+- name: github.com/golang/protobuf
+  version: 69b215d01a5606c843240eab4937eab3acee6530
+  subpackages:
+  - proto
 - name: github.com/gorilla/context
   version: 08b5f424b9271eedf6f9f0ce86cb9396ed337a42
 - name: github.com/gorilla/mux
@@ -29,7 +33,7 @@ imports:
 - name: github.com/sagikazarmark/healthz
   version: 53e8bd01c95dd968996af7f6e8ab52491b49ff7e
 - name: github.com/sagikazarmark/serverz
-  version: f2b8b2cf27595019f4944e8aa085e18622aee8b6
+  version: 6795311fdd32a52d3decca847d2ae602e66af310
 - name: github.com/Sirupsen/logrus
   version: 0208149b40d863d2c1a2f8fe5753096a9cf2cc8b
 - name: github.com/tinylib/msgp
@@ -40,12 +44,29 @@ imports:
   version: 61557ac0112b576429a0df080e1c2cef5dfbb642
   subpackages:
   - context
+  - http2
+  - http2/hpack
+  - idna
   - internal/timeseries
+  - lex/httplex
   - trace
 - name: golang.org/x/sys
   version: e24f485414aeafb646f6fca458b0bf869c0880a1
   subpackages:
   - unix
+- name: google.golang.org/grpc
+  version: 708a7f9f3283aa2d4f6132d287d78683babe55c8
+  subpackages:
+  - codes
+  - credentials
+  - grpclog
+  - internal
+  - metadata
+  - naming
+  - peer
+  - stats
+  - tap
+  - transport
 - name: gopkg.in/airbrake/gobrake.v2
   version: 668876711219e8b0206e2994bf0a59d889c775aa
 - name: gopkg.in/gemnasium/logrus-airbrake-hook.v2
