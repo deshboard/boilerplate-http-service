@@ -1,5 +1,5 @@
-hash: fbd091898b3e919f52328fac4f1b2b63f6143ac17d80968124722511a3dfcf8c
-updated: 2017-03-02T11:54:43.309732786+01:00
+hash: c77aaddb847692d72bfcc3312b1f9301abe44e9d66e1639162c3447d36a8c035
+updated: 2017-03-09T11:07:39.997485382+01:00
 imports:
 - name: github.com/airbrake/gobrake
   version: 668876711219e8b0206e2994bf0a59d889c775aa
@@ -31,7 +31,7 @@ imports:
 - name: github.com/philhofer/fwd
   version: 98c11a7a6ec829d672b03833c3d69a7fae1ca972
 - name: github.com/sagikazarmark/healthz
-  version: 53e8bd01c95dd968996af7f6e8ab52491b49ff7e
+  version: 53d84ee314bb0f042a6d5c2fb65bab4301686dcf
 - name: github.com/sagikazarmark/serverz
   version: 6795311fdd32a52d3decca847d2ae602e66af310
 - name: github.com/Sirupsen/logrus
