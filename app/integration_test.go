@@ -6,7 +6,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/deshboard/boilerplate-service/app"
+	"github.com/deshboard/boilerplate-http-service/app"
 	"github.com/kelseyhightower/envconfig"
 )
 
