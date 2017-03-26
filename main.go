@@ -53,13 +53,15 @@ func main() {
 	service := app.NewService()
 	server := &serverz.NamedServer{
 		Server: &http.Server{
-			Handler:  newServiceHandler(service, tracer),
+			Handler:  app.NewServiceHandler(service, tracer),
 			ErrorLog: log.New(w, "http: ", 0),
 		},
 		Name: "http",
 	}
 
-	healthHandler, status := newHealthServiceHandler()
+	status := healthz.NewStatusChecker(healthz.Healthy)
+	readiness := status
+	healthHandler := healthz.NewHealthServiceHandler(healthz.NewCheckers(), readiness)
 	healthServer := &serverz.NamedServer{
 		Server: &http.Server{
 			Handler:  healthHandler,
