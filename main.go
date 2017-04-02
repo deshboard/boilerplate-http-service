@@ -52,7 +52,7 @@ func main() {
 		go serverManager.ListenAndStartServer(debugServer, config.DebugAddr)(errChan)
 	}
 
-	service := app.NewService()
+	service := app.NewService(logger)
 	server := &serverz.NamedServer{
 		Server: &http.Server{
 			Handler:  app.NewServiceHandler(service, tracer),
