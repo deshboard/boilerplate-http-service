@@ -11,6 +11,8 @@ import (
 	"sync"
 	"syscall"
 
+	"time"
+
 	"github.com/Sirupsen/logrus"
 	"github.com/deshboard/boilerplate-http-service/app"
 	"github.com/sagikazarmark/healthz"
@@ -59,9 +61,10 @@ func main() {
 		Name: "http",
 	}
 
+	serviceHealth := healthz.NewTCPChecker(config.ServiceAddr, healthz.WithTCPTimeout(2*time.Second))
 	status := healthz.NewStatusChecker(healthz.Healthy)
 	readiness := status
-	healthHandler := healthz.NewHealthServiceHandler(healthz.NewCheckers(), readiness)
+	healthHandler := healthz.NewHealthServiceHandler(serviceHealth, readiness)
 	healthServer := &serverz.NamedServer{
 		Server: &http.Server{
 			Handler:  healthHandler,
