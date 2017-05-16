@@ -20,7 +20,8 @@ import (
 )
 
 func main() {
-	defer shutdown.Handle()
+	defer logger.Info("Shutting down")
+	defer shutdownManager.Shutdown()
 
 	flag.Parse()
 
@@ -29,10 +30,10 @@ func main() {
 		"commitHash":  app.CommitHash,
 		"buildDate":   app.BuildDate,
 		"environment": config.Environment,
-	}).Printf("Starting %s service", app.FriendlyServiceName)
+	}).Printf("Starting %s", app.FriendlyServiceName)
 
 	w := logger.Logger.WriterLevel(logrus.ErrorLevel)
-	shutdown.Register(w.Close)
+	shutdownManager.Register(w.Close)
 
 	serverManager := serverz.NewServerManager(logger)
 	errChan := make(chan error, 10)
@@ -47,7 +48,7 @@ func main() {
 			},
 			Name: "debug",
 		}
-		shutdown.RegisterAsFirst(debugServer.Close)
+		shutdownManager.RegisterAsFirst(debugServer.Close)
 
 		go serverManager.ListenAndStartServer(debugServer, config.DebugAddr)(errChan)
 	}
@@ -73,7 +74,7 @@ func main() {
 		Name: "health",
 	}
 
-	shutdown.RegisterAsFirst(healthServer.Close, server.Close)
+	shutdownManager.RegisterAsFirst(healthServer.Close, server.Close)
 
 	go serverManager.ListenAndStartServer(healthServer, config.HealthAddr)(errChan)
 	go serverManager.ListenAndStartServer(server, config.ServiceAddr)(errChan)
