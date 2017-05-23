@@ -1,5 +1,5 @@
-hash: 08cee6bf0481c48a617c04f0d963eb3d8612df06c2f135bbeb916638eea2998d
-updated: 2017-05-16T16:53:29.608545259+02:00
+hash: f2e26e9195f3ec960950963212e40a53df66a7eeb5d2257b0495caaa03105ade
+updated: 2017-05-23T22:30:14.604168762+02:00
 imports:
 - name: github.com/airbrake/gobrake
   version: 668876711219e8b0206e2994bf0a59d889c775aa
@@ -17,7 +17,7 @@ imports:
 - name: github.com/gorilla/context
   version: 08b5f424b9271eedf6f9f0ce86cb9396ed337a42
 - name: github.com/gorilla/mux
-  version: 392c28fe23e1c45ddba891b0320b3b5df220beea
+  version: bcd8bc72b08df0f70df986b97f95590779502d31
 - name: github.com/kelseyhightower/envconfig
   version: f611eb38b3875cc3bd991ca91c51d06446afa14c
 - name: github.com/opentracing-contrib/go-stdlib
@@ -36,7 +36,7 @@ imports:
 - name: github.com/sagikazarmark/serverz
   version: 59a44e00a01fbec7f080dc8d0e13366100439f32
 - name: github.com/sagikazarmark/utilz
-  version: 5b9d3f7d70e84fd8c7ad3142775016998e117e4e
+  version: a25eb2121e4945c240475f89dd3bc1bdd6fef1c9
   subpackages:
   - errors
   - util
@@ -91,4 +91,9 @@ imports:
   version: 668876711219e8b0206e2994bf0a59d889c775aa
 - name: gopkg.in/gemnasium/logrus-airbrake-hook.v2
   version: bfee1239d796830ca346767650cce5ba90d58c57
-testImports: []
+testImports:
+- name: github.com/DATA-DOG/godog
+  version: 92fbee719c9593813b24a6ef042bcad40324ede4
+  subpackages:
+  - colors
+  - gherkin
