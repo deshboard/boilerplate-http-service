@@ -54,9 +54,9 @@ func main() {
 		go serverManager.ListenAndStartServer(debugServer, config.DebugAddr)(errChan)
 	}
 
-	serviceHealth := healthz.NewTCPChecker(config.ServiceAddr, healthz.WithTCPTimeout(2*time.Second))
+	serviceChecker := healthz.NewTCPChecker(config.ServiceAddr, healthz.WithTCPTimeout(2*time.Second))
 	status := healthz.NewStatusChecker(healthz.Healthy)
-	healthService := healthz.NewHealthService(serviceHealth, status)
+	healthService := healthz.NewHealthService(serviceChecker, status)
 	healthHandler := http.NewServeMux()
 
 	healthHandler.HandleFunc("/healthz", healthService.HealthStatus)
