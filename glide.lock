@@ -1,8 +1,12 @@
-hash: f2e26e9195f3ec960950963212e40a53df66a7eeb5d2257b0495caaa03105ade
-updated: 2017-05-23T22:30:14.604168762+02:00
+hash: 07458082032c7a4868a23fe9b7dcd1cab62cf3afe52eb75c098a441aaf40c95c
+updated: 2017-05-30T05:38:13.999109135+02:00
 imports:
 - name: github.com/airbrake/gobrake
   version: 668876711219e8b0206e2994bf0a59d889c775aa
+- name: github.com/beorn7/perks
+  version: 4c0e84591b9aa9e6dcfdf3e020114cd81f89d5f9
+  subpackages:
+  - quantile
 - name: github.com/evalphobia/logrus_fluent
   version: 86bb83d119886b935a52194cad48fd01815b0125
 - name: github.com/fluent/fluent-logger-golang
@@ -20,6 +24,10 @@ imports:
   version: bcd8bc72b08df0f70df986b97f95590779502d31
 - name: github.com/kelseyhightower/envconfig
   version: f611eb38b3875cc3bd991ca91c51d06446afa14c
+- name: github.com/matttproud/golang_protobuf_extensions
+  version: c12348ce28de40eed0136aa2b644d0ee0650e56c
+  subpackages:
+  - pbutil
 - name: github.com/opentracing-contrib/go-stdlib
   version: 1de4cc2120e71f745a5810488bf64b29b6d7d9f6
   subpackages:
@@ -31,12 +39,31 @@ imports:
   - log
 - name: github.com/philhofer/fwd
   version: 98c11a7a6ec829d672b03833c3d69a7fae1ca972
+- name: github.com/prometheus/client_golang
+  version: c5b7fccd204277076155f10851dad72b76a49317
+  subpackages:
+  - prometheus
+  - prometheus/promhttp
+- name: github.com/prometheus/client_model
+  version: 6f3806018612930941127f2a7c6c453ba2c527d2
+  subpackages:
+  - go
+- name: github.com/prometheus/common
+  version: 13ba4ddd0caa9c28ca7b7bffe1dfa9ed8d5ef207
+  subpackages:
+  - expfmt
+  - internal/bitbucket.org/ww/goautoneg
+  - model
+- name: github.com/prometheus/procfs
+  version: 65c1f6f8f0fc1e2185eb9863a3bc751496404259
+  subpackages:
+  - xfs
 - name: github.com/sagikazarmark/healthz
   version: 941786782b035e1a9a533ca7b8c685792b3cbedb
 - name: github.com/sagikazarmark/serverz
   version: 59a44e00a01fbec7f080dc8d0e13366100439f32
 - name: github.com/sagikazarmark/utilz
-  version: a25eb2121e4945c240475f89dd3bc1bdd6fef1c9
+  version: 616992984d7477c8fcf31bea6a64b296f26e82ce
   subpackages:
   - errors
   - util

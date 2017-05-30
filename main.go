@@ -15,6 +15,7 @@ import (
 
 	"github.com/Sirupsen/logrus"
 	"github.com/deshboard/boilerplate-http-service/app"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/sagikazarmark/healthz"
 	"github.com/sagikazarmark/serverz"
 )
@@ -66,6 +67,12 @@ func main() {
 	status := healthz.NewStatusChecker(healthz.Healthy)
 	readiness := status
 	healthHandler := healthz.NewHealthServiceHandler(serviceHealth, readiness)
+
+	if config.MetricsEnabled {
+		healthHandler := healthHandler.(*http.ServeMux)
+		healthHandler.Handle("/", promhttp.Handler())
+	}
+
 	healthServer := &serverz.NamedServer{
 		Server: &http.Server{
 			Handler:  healthHandler,
