@@ -31,7 +31,7 @@ func main() {
 		"commitHash":  app.CommitHash,
 		"buildDate":   app.BuildDate,
 		"environment": config.Environment,
-	}).Printf("Starting %s", app.FriendlyServiceName)
+	}).Infof("Starting %s", app.FriendlyServiceName)
 
 	w := logger.Logger.WriterLevel(logrus.ErrorLevel)
 	shutdownManager.Register(w.Close)
@@ -49,28 +49,23 @@ func main() {
 			},
 			Name: "debug",
 		}
+
 		shutdownManager.RegisterAsFirst(debugServer.Close)
-
 		go serverManager.ListenAndStartServer(debugServer, config.DebugAddr)(errChan)
-	}
-
-	service := app.NewService(logger)
-	server := &serverz.NamedServer{
-		Server: &http.Server{
-			Handler:  app.NewServiceHandler(service, tracer),
-			ErrorLog: log.New(w, "http: ", 0),
-		},
-		Name: "http",
 	}
 
 	serviceHealth := healthz.NewTCPChecker(config.ServiceAddr, healthz.WithTCPTimeout(2*time.Second))
 	status := healthz.NewStatusChecker(healthz.Healthy)
-	readiness := status
-	healthHandler := healthz.NewHealthServiceHandler(serviceHealth, readiness)
+	healthService := healthz.NewHealthService(serviceHealth, status)
+	healthHandler := http.NewServeMux()
+
+	healthHandler.HandleFunc("/healthz", healthService.HealthStatus)
+	healthHandler.HandleFunc("/readiness", healthService.ReadinessStatus)
 
 	if config.MetricsEnabled {
-		healthHandler := healthHandler.(*http.ServeMux)
-		healthHandler.Handle("/", promhttp.Handler())
+		logger.Debug("Serving metrics under health endpoint")
+
+		healthHandler.Handle("/metrics", promhttp.Handler())
 	}
 
 	healthServer := &serverz.NamedServer{
@@ -81,9 +76,18 @@ func main() {
 		Name: "health",
 	}
 
-	shutdownManager.RegisterAsFirst(healthServer.Close, server.Close)
-
+	shutdownManager.RegisterAsFirst(healthServer.Close)
 	go serverManager.ListenAndStartServer(healthServer, config.HealthAddr)(errChan)
+
+	server := &serverz.NamedServer{
+		Server: &http.Server{
+			Handler:  newHandler(),
+			ErrorLog: log.New(w, "http: ", 0),
+		},
+		Name: "http",
+	}
+
+	shutdownManager.RegisterAsFirst(server.Close)
 	go serverManager.ListenAndStartServer(server, config.ServiceAddr)(errChan)
 
 	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
@@ -105,6 +109,8 @@ MainLoop:
 		case s := <-signalChan:
 			logger.Infof(fmt.Sprintf("Captured %v", s))
 			status.SetStatus(healthz.Unhealthy)
+
+			logger.Debugf("Shutting down with timeout %v", config.ShutdownTimeout)
 
 			ctx, cancel := context.WithTimeout(context.Background(), config.ShutdownTimeout)
 			wg := &sync.WaitGroup{}
