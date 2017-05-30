@@ -55,12 +55,15 @@ func main() {
 	}
 
 	serviceChecker := healthz.NewTCPChecker(config.ServiceAddr, healthz.WithTCPTimeout(2*time.Second))
+	checkerCollector.RegisterChecker(healthz.LivenessCheck, serviceChecker)
+
 	status := healthz.NewStatusChecker(healthz.Healthy)
-	healthService := healthz.NewHealthService(serviceChecker, status)
+	checkerCollector.RegisterChecker(healthz.ReadinessCheck, status)
+	healthService := checkerCollector.NewHealthService()
 	healthHandler := http.NewServeMux()
 
-	healthHandler.HandleFunc("/healthz", healthService.HealthStatus)
-	healthHandler.HandleFunc("/readiness", healthService.ReadinessStatus)
+	healthHandler.Handle("/healthz", healthService.Handler(healthz.LivenessCheck))
+	healthHandler.Handle("/readiness", healthService.Handler(healthz.ReadinessCheck))
 
 	if config.MetricsEnabled {
 		logger.Debug("Serving metrics under health endpoint")
@@ -76,9 +79,6 @@ func main() {
 		Name: "health",
 	}
 
-	shutdownManager.RegisterAsFirst(healthServer.Close)
-	go serverManager.ListenAndStartServer(healthServer, config.HealthAddr)(errChan)
-
 	server := &serverz.NamedServer{
 		Server: &http.Server{
 			Handler:  newHandler(),
@@ -87,8 +87,9 @@ func main() {
 		Name: "http",
 	}
 
-	shutdownManager.RegisterAsFirst(server.Close)
+	shutdownManager.RegisterAsFirst(server.Close, healthServer.Close)
 	go serverManager.ListenAndStartServer(server, config.ServiceAddr)(errChan)
+	go serverManager.ListenAndStartServer(healthServer, config.HealthAddr)(errChan)
 
 	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
 
@@ -118,7 +119,6 @@ MainLoop:
 			if config.Debug {
 				go serverManager.StopServer(debugServer, wg)(ctx)
 			}
-
 			go serverManager.StopServer(server, wg)(ctx)
 			go serverManager.StopServer(healthServer, wg)(ctx)
 
