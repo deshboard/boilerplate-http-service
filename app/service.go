@@ -3,7 +3,7 @@ package app
 import (
 	"net/http"
 
-	"github.com/Sirupsen/logrus"
+	"github.com/go-kit/kit/log"
 	"github.com/gorilla/mux"
 )
 
@@ -15,11 +15,11 @@ type paramFetcher func(r *http.Request) map[string]string
 type Service struct {
 	getParams paramFetcher
 
-	logger logrus.FieldLogger
+	logger log.Logger
 }
 
 // NewService creates a new service object
-func NewService(logger logrus.FieldLogger) *Service {
+func NewService(logger log.Logger) *Service {
 	return &Service{
 		getParams: paramFetcher(mux.Vars),
 
