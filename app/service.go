@@ -7,24 +7,22 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// Returns parameters from the request
-// (decouples the service from the router implementation)
-type paramFetcher func(r *http.Request) map[string]string
-
 // Service contains the main controller logic
 type Service struct {
-	getParams paramFetcher
-
 	logger log.Logger
 }
 
 // NewService creates a new service object
 func NewService(logger log.Logger) *Service {
 	return &Service{
-		getParams: paramFetcher(mux.Vars),
-
 		logger: logger,
 	}
+}
+
+// getParams returns parameters from the request.
+// (decouples the service from the router implementation)
+func (s *Service) getParams(r *http.Request) map[string]string {
+	return mux.Vars(r)
 }
 
 // Home represents the main route
