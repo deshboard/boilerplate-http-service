@@ -20,7 +20,7 @@ func newServer(config *configuration, logger log.Logger, errorHandler emperror.H
 	serviceChecker := healthz.NewTCPChecker(config.ServiceAddr, healthz.WithTCPTimeout(2*time.Second))
 	healthCollector.RegisterChecker(healthz.LivenessCheck, serviceChecker)
 
-	service := app.NewService(logger)
+	service := app.NewService(logger, errorHandler)
 
 	handler := app.NewServiceHandler(service, tracer)
 
