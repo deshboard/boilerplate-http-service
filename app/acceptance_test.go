@@ -10,7 +10,7 @@ import (
 )
 
 func init() {
-	runs = append(runs, func() int {
+	runners = append(runners, func() int {
 		format := "progress"
 		for _, arg := range os.Args[1:] {
 			// go test transforms -v option
@@ -30,8 +30,4 @@ func init() {
 			},
 		)
 	})
-}
-
-func FeatureContext(s *godog.Suite) {
-	// Add steps here
 }
