@@ -10,7 +10,7 @@ import (
 	"github.com/go-kit/kit/log/level"
 	"github.com/goph/healthz"
 	"github.com/goph/serverz"
-	"github.com/goph/serverz/aio"
+	"github.com/goph/serverz/named"
 )
 
 // newServer creates the main server instance for the service.
@@ -24,7 +24,7 @@ func newServer(appCtx *application) serverz.Server {
 
 	handler := app.NewServiceHandler(service, appCtx.tracer)
 
-	return &aio.Server{
+	return &named.Server{
 		Server: &http.Server{
 			Handler:  handler,
 			ErrorLog: stdlog.New(log.NewStdlibAdapter(level.Error(appCtx.logger)), "http: ", 0),
