@@ -6,13 +6,14 @@ import (
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
 	"github.com/goph/emperror"
+	"github.com/goph/stdlib/errors"
 	"github.com/gorilla/mux"
 )
 
 // Service contains the main controller logic.
 type Service struct {
 	Logger       log.Logger
-	ErrorHandler emperror.Handler
+	ErrorHandler errors.Handler
 }
 
 // NewService creates a new service object.
