@@ -18,9 +18,10 @@ func newHTTPServer(appCtx *application) *aio.Server {
 	serviceChecker := healthz.NewTCPChecker(appCtx.config.HTTPAddr, healthz.WithTCPTimeout(2*time.Second))
 	appCtx.healthCollector.RegisterChecker(healthz.LivenessCheck, serviceChecker)
 
-	service := app.NewService()
-	service.Logger = appCtx.logger
-	service.ErrorHandler = appCtx.errorHandler
+	service := app.NewService(
+		app.Logger(appCtx.logger),
+		app.ErrorHandler(appCtx.errorHandler),
+	)
 
 	handler := app.NewServiceHandler(service, appCtx.tracer)
 
