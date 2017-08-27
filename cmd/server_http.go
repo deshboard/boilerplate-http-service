@@ -15,7 +15,7 @@ import (
 
 // newHTTPServer creates the main server instance for the service.
 func newHTTPServer(appCtx *application) *aio.Server {
-	serviceChecker := healthz.NewTCPChecker(appCtx.config.ServiceAddr, healthz.WithTCPTimeout(2*time.Second))
+	serviceChecker := healthz.NewTCPChecker(appCtx.config.HTTPAddr, healthz.WithTCPTimeout(2*time.Second))
 	appCtx.healthCollector.RegisterChecker(healthz.LivenessCheck, serviceChecker)
 
 	service := app.NewService()
@@ -30,6 +30,6 @@ func newHTTPServer(appCtx *application) *aio.Server {
 			ErrorLog: stdlog.New(log.NewStdlibAdapter(level.Error(appCtx.logger)), "http: ", 0),
 		},
 		Name: "http",
-		Addr: net.ResolveVirtualAddr("tcp", appCtx.config.ServiceAddr),
+		Addr: net.ResolveVirtualAddr("tcp", appCtx.config.HTTPAddr),
 	}
 }
