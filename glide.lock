@@ -1,5 +1,5 @@
-hash: 451353bc54d1421bb664b1dac838291cd25b6f76b39a9f5fd0cf0a58f0e3fc13
-updated: 2017-08-28T17:27:24.101509373+02:00
+hash: 088281ad072026b93b82c9ee3ec0f8c3945341868d1ab50b40b768c0fb1a6b28
+updated: 2017-08-30T23:55:32.379348724+02:00
 imports:
 - name: github.com/facebookgo/clock
   version: 600d898af40aa09a7a93ecb9265d87b0504b6f03
@@ -13,9 +13,9 @@ imports:
 - name: github.com/go-stack/stack
   version: 817915b46b97fd7bb80e8ab6b69f01a53ac3eebf
 - name: github.com/goph/emperror
-  version: ffb3cac8d464cd350271fc706011883f25077412
+  version: 84194a32041fe2a0816fabf3fe54b0cc6156e8fc
   subpackages:
-  - internal/errors
+  - log
 - name: github.com/goph/healthz
   version: 571dac1216f2f4f920458b3b93f5835ec1bd35c6
 - name: github.com/goph/serverz
@@ -26,12 +26,10 @@ imports:
   - internal/errors
   - internal/ext
 - name: github.com/goph/stdlib
-  version: 470bc5eafd200f81b9d493acf180343ebc91ba29
+  version: bdfa619d30dc9afa78145c326ae0d9ec8e4edcc0
   subpackages:
-  - errors
   - expvar
   - ext
-  - log
   - net
   - net/http
   - net/http/pprof
