@@ -9,12 +9,11 @@ import (
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
 	"github.com/goph/healthz"
-	"github.com/goph/serverz/aio"
-	"github.com/goph/stdlib/net"
+	"github.com/goph/serverz"
 )
 
 // newHTTPServer creates the main server instance for the service.
-func newHTTPServer(appCtx *application) *aio.Server {
+func newHTTPServer(appCtx *application) serverz.Server {
 	serviceChecker := healthz.NewTCPChecker(appCtx.config.HTTPAddr, healthz.WithTCPTimeout(2*time.Second))
 	appCtx.healthCollector.RegisterChecker(healthz.LivenessCheck, serviceChecker)
 
@@ -25,12 +24,13 @@ func newHTTPServer(appCtx *application) *aio.Server {
 
 	handler := app.NewServiceHandler(service, appCtx.tracer)
 
-	return &aio.Server{
+	return &serverz.AppServer{
 		Server: &http.Server{
 			Handler:  handler,
 			ErrorLog: stdlog.New(log.NewStdlibAdapter(level.Error(appCtx.logger)), "http: ", 0),
 		},
-		Name: "http",
-		Addr: net.ResolveVirtualAddr("tcp", appCtx.config.HTTPAddr),
+		Name:   "http",
+		Addr:   serverz.NewAddr("tcp", appCtx.config.HTTPAddr),
+		Logger: appCtx.logger,
 	}
 }

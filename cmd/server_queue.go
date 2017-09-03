@@ -5,13 +5,12 @@ import "github.com/goph/serverz"
 // newServerQueue returns a new server queue with all the registered servers.
 func newServerQueue(appCtx *application) *serverz.Queue {
 	queue := serverz.NewQueue()
-	queue.Manager.Logger = appCtx.logger
-
-	httpServer := newHTTPServer(appCtx)
-	queue.Prepend(httpServer)
 
 	debugServer := newDebugServer(appCtx)
-	queue.Prepend(debugServer)
+	queue.Prepend(debugServer, nil)
+
+	httpServer := newHTTPServer(appCtx)
+	queue.Append(httpServer, nil)
 
 	return queue
 }
