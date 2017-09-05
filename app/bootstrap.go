@@ -3,7 +3,7 @@ package app
 import (
 	"net/http"
 
-	opentracing "github.com/opentracing/opentracing-go"
+	"github.com/opentracing/opentracing-go"
 )
 
 // NewServiceHandler returns a new service handler
