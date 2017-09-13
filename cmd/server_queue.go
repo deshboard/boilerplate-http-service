@@ -9,7 +9,7 @@ func newServerQueue(a *application) *serverz.Queue {
 	debugServer := newDebugServer(a)
 	queue.Prepend(debugServer, nil)
 
-	httpServer := newHTTPServer(appCtx)
+	httpServer := newHTTPServer(a)
 	queue.Append(httpServer, nil)
 
 	return queue
