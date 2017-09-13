@@ -12,9 +12,10 @@ type configuration struct {
 	Debug       bool   `split_words:"true"`
 	LogFormat   string `split_words:"true" default:"json"`
 
-	HTTPAddr        string        `ignored:"true"`
 	DebugAddr       string        `ignored:"true"`
 	ShutdownTimeout time.Duration `ignored:"true"`
+
+	HTTPAddr string `ignored:"true"`
 }
 
 // flags configures a flagset.
@@ -29,7 +30,8 @@ func (c *configuration) flags(flags *flag.FlagSet) {
 	}
 
 	// Load flags into configuration
+	flags.StringVar(&c.DebugAddr, "debug.addr", defaultAddr+":10000", "Debug and health check address")
+	flags.DurationVar(&c.ShutdownTimeout, "shutdown", 2*time.Second, "Timeout for graceful shutdown")
+
 	flags.StringVar(&c.HTTPAddr, "http.addr", defaultAddr+":8000", "HTTP service address.")
-	flags.StringVar(&c.DebugAddr, "debug.addr", defaultAddr+":10000", "Debug and health check address.")
-	flags.DurationVar(&c.ShutdownTimeout, "shutdown", 2*time.Second, "Shutdown timeout.")
 }
