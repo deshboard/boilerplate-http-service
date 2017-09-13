@@ -33,5 +33,5 @@ func (c *configuration) flags(flags *flag.FlagSet) {
 	flags.StringVar(&c.DebugAddr, "debug.addr", defaultAddr+":10000", "Debug and health check address")
 	flags.DurationVar(&c.ShutdownTimeout, "shutdown", 2*time.Second, "Timeout for graceful shutdown")
 
-	flags.StringVar(&c.HTTPAddr, "http.addr", defaultAddr+":8000", "HTTP service address.")
+	flags.StringVar(&c.HTTPAddr, "http.addr", defaultAddr+":8000", "HTTP service address")
 }
