@@ -27,7 +27,7 @@ func newHTTPServer(app *application) serverz.Server {
 	return &serverz.AppServer{
 		Server: &http.Server{
 			Handler:  handler,
-			ErrorLog: stdlog.New(log.NewStdlibAdapter(level.Error(app.logger)), "http: ", 0),
+			ErrorLog: stdlog.New(log.NewStdlibAdapter(level.Error(log.With(app.logger, "server", "http"))), "", 0),
 		},
 		Name:   "http",
 		Addr:   serverz.NewAddr("tcp", app.config.HTTPAddr),
