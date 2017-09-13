@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/deshboard/boilerplate-http-service/app"
+	. "github.com/deshboard/boilerplate-http-service/app"
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
 	"github.com/goph/healthz"
@@ -13,24 +13,24 @@ import (
 )
 
 // newHTTPServer creates the main server instance for the service.
-func newHTTPServer(appCtx *application) serverz.Server {
-	serviceChecker := healthz.NewTCPChecker(appCtx.config.HTTPAddr, healthz.WithTCPTimeout(2*time.Second))
-	appCtx.healthCollector.RegisterChecker(healthz.LivenessCheck, serviceChecker)
+func newHTTPServer(app *application) serverz.Server {
+	serviceChecker := healthz.NewTCPChecker(app.config.HTTPAddr, healthz.WithTCPTimeout(2*time.Second))
+	app.healthCollector.RegisterChecker(healthz.LivenessCheck, serviceChecker)
 
-	service := app.NewService(
-		app.Logger(appCtx.logger),
-		app.ErrorHandler(appCtx.errorHandler),
+	service := NewService(
+		Logger(app.logger),
+		ErrorHandler(app.errorHandler),
 	)
 
-	handler := app.NewServiceHandler(service, appCtx.tracer)
+	handler := NewServiceHandler(service, app.tracer)
 
 	return &serverz.AppServer{
 		Server: &http.Server{
 			Handler:  handler,
-			ErrorLog: stdlog.New(log.NewStdlibAdapter(level.Error(appCtx.logger)), "http: ", 0),
+			ErrorLog: stdlog.New(log.NewStdlibAdapter(level.Error(app.logger)), "http: ", 0),
 		},
 		Name:   "http",
-		Addr:   serverz.NewAddr("tcp", appCtx.config.HTTPAddr),
-		Logger: appCtx.logger,
+		Addr:   serverz.NewAddr("tcp", app.config.HTTPAddr),
+		Logger: app.logger,
 	}
 }
