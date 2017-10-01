@@ -1,5 +1,5 @@
-hash: 40e3a28234ff2cadceb190104c37b9fb85659ad7864b9d8732ff03dd64b9b5b0
-updated: 2017-09-13T18:12:43.328298651+02:00
+hash: 23a6f65d411ded0771b8ea67982121eaf07ccf6d0291d011d9025d993d1a135b
+updated: 2017-10-01T18:38:47.6511539+02:00
 imports:
 - name: github.com/go-kit/kit
   version: a9ca6725cbbea455e61c6bc8a1ed28e81eb3493b
@@ -15,6 +15,11 @@ imports:
   version: 84194a32041fe2a0816fabf3fe54b0cc6156e8fc
   subpackages:
   - log
+- name: github.com/goph/fw
+  version: 2bc09f77bf61044378259469dc5f131a25911f0f
+  subpackages:
+  - error
+  - log
 - name: github.com/goph/healthz
   version: 571dac1216f2f4f920458b3b93f5835ec1bd35c6
 - name: github.com/goph/serverz
@@ -25,7 +30,6 @@ imports:
   version: 5703fbf5f4f844082ae11de7e6e28deb61dba669
   subpackages:
   - expvar
-  - ext
   - net/http
   - net/http/pprof
   - x/net/trace
@@ -34,7 +38,7 @@ imports:
 - name: github.com/gorilla/mux
   version: 24fca303ac6da784b9e8269f724ddeb0b2eea5e7
 - name: github.com/joho/godotenv
-  version: 726cc8b906e3d31c70a9671c90a13716a8d3f50d
+  version: a79fa1e548e2c689c241d10173efd51e5d689d5b
 - name: github.com/kelseyhightower/envconfig
   version: f611eb38b3875cc3bd991ca91c51d06446afa14c
 - name: github.com/kr/logfmt
