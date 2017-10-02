@@ -1,5 +1,5 @@
-hash: 23a6f65d411ded0771b8ea67982121eaf07ccf6d0291d011d9025d993d1a135b
-updated: 2017-10-01T18:38:47.6511539+02:00
+hash: 065097f53093ac3ca6d113dba3406d95938d19e5532f2c69d35740371c5959ad
+updated: 2017-10-02T05:14:58.44301364+02:00
 imports:
 - name: github.com/go-kit/kit
   version: a9ca6725cbbea455e61c6bc8a1ed28e81eb3493b
@@ -16,7 +16,7 @@ imports:
   subpackages:
   - log
 - name: github.com/goph/fw
-  version: 2bc09f77bf61044378259469dc5f131a25911f0f
+  version: a0e08b00d044188ea1e6e42eaff36432ca4b7633
   subpackages:
   - error
   - log

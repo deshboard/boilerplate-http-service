@@ -22,7 +22,7 @@ func newHTTPServer(app *application) serverz.Server {
 		ErrorHandler(app.ErrorHandler()),
 	)
 
-	handler := NewServiceHandler(service, app.tracer)
+	handler := NewServiceHandler(service, app.Tracer())
 
 	return &serverz.AppServer{
 		Server: &http.Server{
