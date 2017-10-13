@@ -1,12 +1,11 @@
-hash: 065097f53093ac3ca6d113dba3406d95938d19e5532f2c69d35740371c5959ad
-updated: 2017-10-02T05:14:58.44301364+02:00
+hash: dfba916d6966c2adbe468670a130c59f7d258a5f1580ea02f3e6603f2ae5fbff
+updated: 2017-10-13T19:55:28.724612359+02:00
 imports:
 - name: github.com/go-kit/kit
-  version: a9ca6725cbbea455e61c6bc8a1ed28e81eb3493b
+  version: 4dc7be5d2d12881735283bcab7352178e190fc71
   subpackages:
   - log
   - log/level
-  - metrics
 - name: github.com/go-logfmt/logfmt
   version: 390ab7935ee28ec6b286364bba9b4dd6410cb3d5
 - name: github.com/go-stack/stack
@@ -15,24 +14,20 @@ imports:
   version: 84194a32041fe2a0816fabf3fe54b0cc6156e8fc
   subpackages:
   - log
-- name: github.com/goph/fw
-  version: a0e08b00d044188ea1e6e42eaff36432ca4b7633
+- name: github.com/goph/fxt
+  version: b8ff97c205237c7823f56373bb5d234bf2500754
   subpackages:
-  - error
+  - debug
+  - errors
+  - http
   - log
+  - tracing
 - name: github.com/goph/healthz
   version: 571dac1216f2f4f920458b3b93f5835ec1bd35c6
 - name: github.com/goph/serverz
   version: e55582cb1f4eaef30fc1454deeb8474f19bc47cd
   subpackages:
   - internal
-- name: github.com/goph/stdlib
-  version: 5703fbf5f4f844082ae11de7e6e28deb61dba669
-  subpackages:
-  - expvar
-  - net/http
-  - net/http/pprof
-  - x/net/trace
 - name: github.com/gorilla/context
   version: 08b5f424b9271eedf6f9f0ce86cb9396ed337a42
 - name: github.com/gorilla/mux
@@ -54,6 +49,18 @@ imports:
   - log
 - name: github.com/pkg/errors
   version: 645ef00459ed84a119197bfb8d8205042c6df63d
+- name: go.uber.org/atomic
+  version: 4e336646b2ef9fc6e47be8e21594178f98e5ebcf
+- name: go.uber.org/dig
+  version: f57771ac8fdc4c484fcd111a700659c6282e1509
+- name: go.uber.org/fx
+  version: a47f1657ce04f3d82db1ef230ffbb292b15af0ee
+  subpackages:
+  - internal/fxlog
+  - internal/fxreflect
+  - internal/lifecycle
+- name: go.uber.org/multierr
+  version: 3c4937480c32f4c13a875a1829af76c98ca3d40a
 - name: golang.org/x/net
   version: 1c05540f6879653db88113bc4a2b70aec4bd491f
   subpackages:

@@ -1,34 +1,44 @@
 package main
 
 import (
-	"github.com/goph/fw"
-	"github.com/goph/fw/log"
+	"net/http"
+
+	"github.com/deshboard/boilerplate-http-service/app"
+	"github.com/go-kit/kit/log"
+	"github.com/goph/emperror"
+	fxhttp "github.com/goph/fxt/http"
+	"github.com/opentracing/opentracing-go"
+	"go.uber.org/dig"
 )
 
-// bootstrap bootstraps the application.
-func bootstrap() (*application, error) {
-	return newApplication(
-		configProvider,
-		applicationProvider,
-		healthProvider,
+// ServiceParams provides a set of dependencies for the service constructor.
+type ServiceParams struct {
+	dig.In
+
+	Logger       log.Logger       `optional:"true"`
+	ErrorHandler emperror.Handler `optional:"true"`
+}
+
+// NewService constructs a new service instance.
+func NewService(params ServiceParams) *app.Service {
+	return app.NewService(
+		app.Logger(params.Logger),
+		app.ErrorHandler(params.ErrorHandler),
 	)
 }
 
-// applicationProvider provides an fw.Application instance.
-func applicationProvider(app *application) error {
-	a := fw.NewApplication(
-		fw.Logger(log.NewLogger(
-			log.FormatString(app.config.LogFormat),
-			log.Debug(app.config.Debug),
-			log.With(
-				"environment", app.config.Environment,
-				"service", ServiceName,
-				"tag", LogTag,
-			),
-		)),
-	)
+// NewService constructs a new service handler instance.
+func NewServiceHandler(service *app.Service, tracer opentracing.Tracer) http.Handler {
+	router := app.NewRouter(tracer)
 
-	app.Application = a
+	router.HandleFunc("/", service.Home).Name("index").Methods("GET")
 
-	return nil
+	return router
+}
+
+// NewHTTPConfig creates a debug config constructor.
+func NewHTTPConfig(config *Config) *fxhttp.Config {
+	c := fxhttp.NewConfig(config.HTTPAddr)
+
+	return c
 }
