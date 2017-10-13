@@ -44,7 +44,13 @@ func main() {
 			NewDebugConfig,
 			debug.NewServer,
 			debug.NewHealthCollector,
+		),
+		fx.Invoke(func(collector healthz.Collector) {
+			collector.RegisterChecker(healthz.ReadinessCheck, status)
+		}),
+		fx.Extract(&ext),
 
+		fx.Provide(
 			// HTTP server
 			NewService,
 			NewHTTPConfig,
@@ -53,10 +59,6 @@ func main() {
 
 			tracing.NewTracer,
 		),
-		fx.Invoke(func(collector healthz.Collector) {
-			collector.RegisterChecker(healthz.ReadinessCheck, status)
-		}),
-		fx.Extract(&ext),
 	)
 
 	err := app.Err()
