@@ -36,7 +36,7 @@ func NewServiceHandler(service *app.Service, tracer opentracing.Tracer) http.Han
 	return router
 }
 
-// NewHTTPConfig creates a debug config constructor.
+// NewHTTPConfig creates a http config.
 func NewHTTPConfig(config *Config) *fxhttp.Config {
 	c := fxhttp.NewConfig(config.HTTPAddr)
 
