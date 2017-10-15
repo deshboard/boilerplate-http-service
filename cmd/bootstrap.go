@@ -27,13 +27,9 @@ func NewService(params ServiceParams) *app.Service {
 	)
 }
 
-// NewService constructs a new service handler instance.
+// NewServiceHandler constructs a new service handler instance.
 func NewServiceHandler(service *app.Service, tracer opentracing.Tracer) http.Handler {
-	router := app.NewRouter(tracer)
-
-	router.HandleFunc("/", service.Home).Name("index").Methods("GET")
-
-	return router
+	return app.NewServiceHandler(service, tracer)
 }
 
 // NewHTTPConfig creates a http config.
