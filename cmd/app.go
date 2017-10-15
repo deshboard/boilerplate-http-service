@@ -34,7 +34,14 @@ func NewServiceHandler(service *app.Service, tracer opentracing.Tracer) http.Han
 
 // NewHTTPConfig creates a http config.
 func NewHTTPConfig(config *Config) *fxhttp.Config {
-	c := fxhttp.NewConfig(config.HTTPAddr)
+	addr := config.HTTPAddr
+
+	// Listen on loopback interface in development mode
+	if config.Environment == "development" && addr[0] == ':' {
+		addr = "127.0.0.1" + addr
+	}
+
+	c := fxhttp.NewConfig(addr)
 
 	return c
 }

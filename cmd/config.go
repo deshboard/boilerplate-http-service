@@ -29,6 +29,7 @@ type Config struct {
 	// Timeout for graceful shutdown (configured by shutdown flag)
 	ShutdownTimeout time.Duration `ignored:"true"`
 
+	// Address of the HTTP server (configured by http.addr flag)
 	HTTPAddr string `ignored:"true"`
 }
 
@@ -39,5 +40,5 @@ func (c *Config) Flags(flags *flag.FlagSet) {
 	flags.StringVar(&c.DebugAddr, "debug.addr", ":10000", "Debug and health check address")
 	flags.DurationVar(&c.ShutdownTimeout, "shutdown", defaultTimeout, "Timeout for graceful shutdown")
 
-	flags.StringVar(&c.HTTPAddr, "http.addr", defaultAddr+":8000", "HTTP service address")
+	flags.StringVar(&c.HTTPAddr, "http.addr", ":8000", "HTTP service address")
 }
