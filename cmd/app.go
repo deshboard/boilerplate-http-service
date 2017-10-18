@@ -7,8 +7,8 @@ import (
 	"github.com/go-kit/kit/log"
 	"github.com/goph/emperror"
 	fxhttp "github.com/goph/fxt/http"
-	"go.uber.org/dig"
 	"github.com/gorilla/mux"
+	"go.uber.org/dig"
 )
 
 // ServiceParams provides a set of dependencies for the service constructor.
