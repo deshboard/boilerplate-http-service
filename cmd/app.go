@@ -7,8 +7,8 @@ import (
 	"github.com/go-kit/kit/log"
 	"github.com/goph/emperror"
 	fxhttp "github.com/goph/fxt/http"
-	"github.com/opentracing/opentracing-go"
 	"go.uber.org/dig"
+	"github.com/gorilla/mux"
 )
 
 // ServiceParams provides a set of dependencies for the service constructor.
@@ -27,9 +27,9 @@ func NewService(params ServiceParams) *app.Service {
 	)
 }
 
-// NewServiceHandler constructs a new service handler instance.
-func NewServiceHandler(service *app.Service, tracer opentracing.Tracer) http.Handler {
-	return app.NewServiceHandler(service, tracer)
+// NewHandler constructs a new service handler instance.
+func NewHandler(router *mux.Router, service *app.Service) http.Handler {
+	return app.NewHandler(router, service)
 }
 
 // NewHTTPConfig creates a http config.

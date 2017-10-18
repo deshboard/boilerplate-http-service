@@ -1,5 +1,5 @@
-hash: b55d6502c7122e3ab940d4a64b0b13ff22cc06edc1caf5466a448aa432089b3d
-updated: 2017-10-15T15:11:01.026102417+02:00
+hash: c8222dee4c7bc0a93de2afe6abd5e7dd445a2ab556d8f889f581d19e59c3c4d6
+updated: 2017-10-18T20:24:51.849523908+02:00
 imports:
 - name: github.com/go-kit/kit
   version: 4dc7be5d2d12881735283bcab7352178e190fc71
@@ -15,11 +15,12 @@ imports:
   subpackages:
   - log
 - name: github.com/goph/fxt
-  version: caed0d051cafaa5e612d576f71e1d202cce0b60e
+  version: c162a07519f3cc5bf7241a91bf5aa72fac95d838
   subpackages:
   - debug
   - errors
   - http
+  - http/gorilla
   - log
   - tracing
 - name: github.com/goph/healthz

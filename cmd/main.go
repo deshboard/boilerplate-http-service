@@ -11,9 +11,11 @@ import (
 	"github.com/goph/fxt/debug"
 	"github.com/goph/fxt/errors"
 	"github.com/goph/fxt/http"
+	"github.com/goph/fxt/http/gorilla"
 	fxlog "github.com/goph/fxt/log"
 	"github.com/goph/fxt/tracing"
 	"github.com/goph/healthz"
+	"github.com/gorilla/mux"
 	"go.uber.org/fx"
 )
 
@@ -52,13 +54,15 @@ func main() {
 
 		fx.Provide(
 			// HTTP server
+			mux.NewRouter,
 			NewService,
+			NewHandler,
 			NewHTTPConfig,
-			NewServiceHandler,
 			http.NewServer,
 
 			tracing.NewTracer,
 		),
+		fx.Invoke(gorilla.InjectTracer),
 	)
 
 	err := app.Err()
