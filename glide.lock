@@ -1,5 +1,5 @@
-hash: c8222dee4c7bc0a93de2afe6abd5e7dd445a2ab556d8f889f581d19e59c3c4d6
-updated: 2017-10-18T20:24:51.849523908+02:00
+hash: 6f59d519de174754bcc85dcda0d10f7a59467efc5a133e227e63bd7b8b8a1bb9
+updated: 2017-10-26T13:09:57.440416642+02:00
 imports:
 - name: github.com/go-kit/kit
   version: 4dc7be5d2d12881735283bcab7352178e190fc71
@@ -11,11 +11,11 @@ imports:
 - name: github.com/go-stack/stack
   version: 817915b46b97fd7bb80e8ab6b69f01a53ac3eebf
 - name: github.com/goph/emperror
-  version: 84194a32041fe2a0816fabf3fe54b0cc6156e8fc
+  version: af661f9c2206596e1c04354d0d7d60cd9b7691d5
   subpackages:
   - log
 - name: github.com/goph/fxt
-  version: c162a07519f3cc5bf7241a91bf5aa72fac95d838
+  version: 14a49380464fc2dd32d7f2999d8de9ce8ff73540
   subpackages:
   - debug
   - errors

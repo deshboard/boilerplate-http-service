@@ -8,14 +8,15 @@ import (
 	"github.com/go-kit/kit/log/level"
 	"github.com/goph/emperror"
 	"github.com/goph/fxt"
-	"github.com/goph/fxt/debug"
-	"github.com/goph/fxt/errors"
-	"github.com/goph/fxt/http"
-	"github.com/goph/fxt/http/gorilla"
+	fxdebug "github.com/goph/fxt/debug"
+	fxerrors "github.com/goph/fxt/errors"
+	fxhttp "github.com/goph/fxt/http"
+	fxgorilla "github.com/goph/fxt/http/gorilla"
 	fxlog "github.com/goph/fxt/log"
-	"github.com/goph/fxt/tracing"
+	fxtracing "github.com/goph/fxt/tracing"
 	"github.com/goph/healthz"
 	"github.com/gorilla/mux"
+	"github.com/pkg/errors"
 	"go.uber.org/fx"
 )
 
@@ -27,8 +28,8 @@ func main() {
 		Logger       log.Logger
 		ErrorHandler emperror.Handler
 
-		DebugErr debug.Err
-		HTTPErr  http.Err
+		DebugErr fxdebug.Err
+		HTTPErr  fxhttp.Err
 	}
 
 	app := fx.New(
@@ -40,12 +41,12 @@ func main() {
 			// Log and error handling
 			NewLoggerConfig,
 			fxlog.NewLogger,
-			errors.NewHandler,
+			fxerrors.NewHandler,
 
 			// Debug server
 			NewDebugConfig,
-			debug.NewServer,
-			debug.NewHealthCollector,
+			fxdebug.NewServer,
+			fxdebug.NewHealthCollector,
 		),
 		fx.Invoke(func(collector healthz.Collector) {
 			collector.RegisterChecker(healthz.ReadinessCheck, status)
@@ -58,11 +59,11 @@ func main() {
 			NewService,
 			NewHandler,
 			NewHTTPConfig,
-			http.NewServer,
+			fxhttp.NewServer,
 
-			tracing.NewTracer,
+			fxtracing.NewTracer,
 		),
-		fx.Invoke(gorilla.InjectTracer),
+		fx.Invoke(fxgorilla.InjectTracer),
 	)
 
 	err := app.Err()
@@ -94,13 +95,13 @@ func main() {
 
 	case err := <-ext.DebugErr:
 		if err != nil {
-			err = emperror.WithStack(emperror.WithMessage(err, "debug server crashed"))
+			err = errors.Wrap(err, "debug server crashed")
 			ext.ErrorHandler.Handle(err)
 		}
 
 	case err := <-ext.HTTPErr:
 		if err != nil {
-			err = emperror.WithStack(emperror.WithMessage(err, "http server crashed"))
+			err = errors.Wrap(err, "http server crashed")
 			ext.ErrorHandler.Handle(err)
 		}
 	}
