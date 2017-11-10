@@ -15,7 +15,7 @@ These components may be:
 a set of constructors for common components
 
 The integration layer and the main execution logic
-can be found in the [cmd/](../../cmd/) directory.
+can be found in the [cmd/](../../cmd) directory.
 
 
 ## Components

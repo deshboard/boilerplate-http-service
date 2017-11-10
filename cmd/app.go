@@ -3,7 +3,7 @@ package main
 import (
 	"net/http"
 
-	"github.com/deshboard/boilerplate-http-service/app"
+	"github.com/deshboard/boilerplate-http-service/pkg/app"
 	"github.com/go-kit/kit/log"
 	"github.com/goph/emperror"
 	fxhttp "github.com/goph/fxt/http"
