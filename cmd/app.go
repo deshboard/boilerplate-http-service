@@ -1,47 +1,29 @@
 package main
 
 import (
-	"net/http"
+	"flag"
 
-	"github.com/deshboard/boilerplate-http-service/pkg/app"
-	"github.com/go-kit/kit/log"
-	"github.com/goph/emperror"
-	fxhttp "github.com/goph/fxt/http"
-	"github.com/gorilla/mux"
-	"go.uber.org/dig"
+	"github.com/deshboard/boilerplate-http-service/app"
 )
 
-// ServiceParams provides a set of dependencies for the service constructor.
-type ServiceParams struct {
-	dig.In
+const FriendlyServiceName = app.FriendlyServiceName
 
-	Logger       log.Logger       `optional:"true"`
-	ErrorHandler emperror.Handler `optional:"true"`
+// NewConfig creates the application Config from flags and the environment.
+func NewConfig(flags *flag.FlagSet) *app.Config {
+	config := new(app.Config)
+
+	config.Flags(flags)
+
+	return config
 }
 
-// NewService returns a new service instance.
-func NewService(params ServiceParams) *app.Service {
-	return app.NewService(
-		app.Logger(params.Logger),
-		app.ErrorHandler(params.ErrorHandler),
-	)
-}
-
-// NewHandler constructs a new service handler instance.
-func NewHandler(router *mux.Router, service *app.Service) http.Handler {
-	return app.NewHandler(router, service)
-}
-
-// NewHTTPConfig creates a http config.
-func NewHTTPConfig(config *Config) *fxhttp.Config {
-	addr := config.HTTPAddr
-
-	// Listen on loopback interface in development mode
-	if config.Environment == "development" && addr[0] == ':' {
-		addr = "127.0.0.1" + addr
+// NewApp creates a new application.
+func NewApp(config *app.Config) *app.Application {
+	info := &app.ApplicationInfo{
+		Version:    Version,
+		CommitHash: CommitHash,
+		BuildDate:  BuildDate,
 	}
 
-	c := fxhttp.NewConfig(addr)
-
-	return c
+	return app.NewApp(config, info)
 }
