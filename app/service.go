@@ -33,7 +33,7 @@ func NewHandler(router *mux.Router, service *app.Service) http.Handler {
 }
 
 // NewHTTPConfig creates a http config.
-func NewHTTPConfig(config *Config) *fxhttp.Config {
+func NewHTTPConfig(config Config) *fxhttp.Config {
 	addr := config.HTTPAddr
 
 	// Listen on loopback interface in development mode
