@@ -1,5 +1,5 @@
-hash: 98d36f91057b1f63d73523cdde6ece8ad023d8fee29f2ebdd00e66a809032b22
-updated: 2018-01-12T17:39:00.634548779+01:00
+hash: 2846b2e4f51cc6d913b657047885fb720dc4906de701a2b748d91256123acffe
+updated: 2018-01-14T01:41:12.476118836+01:00
 imports:
 - name: github.com/DATA-DOG/godog
   version: 4dc98b0e2b130c3c9d06868a050320e5b310d3e7
@@ -22,7 +22,7 @@ imports:
   subpackages:
   - log
 - name: github.com/goph/fxt
-  version: d2c126f512e40950640156f9ef91a5abdf1cfa57
+  version: 7a0340b6e5c8ec000b15cedde816487042746c33
   subpackages:
   - debug
   - errors
@@ -33,7 +33,7 @@ imports:
 - name: github.com/goph/healthz
   version: 571dac1216f2f4f920458b3b93f5835ec1bd35c6
 - name: github.com/goph/nest
-  version: 9150a9a1d4c9e4d9165726d9d748b2f0a485ad95
+  version: 5105bccf2d19b2e604506a47c4ea4a2cb35b8e05
 - name: github.com/gorilla/context
   version: 08b5f424b9271eedf6f9f0ce86cb9396ed337a42
 - name: github.com/gorilla/mux
