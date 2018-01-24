@@ -8,10 +8,12 @@ import (
 
 func newConfig() Config {
 	debugPort, _ := nettest.GetFreePort()
+	httpPort, _ := nettest.GetFreePort()
 
 	return Config{
 		Environment: "test",
 		LogFormat:   "logfmt",
 		DebugAddr:   fmt.Sprintf("127.0.0.1:%d", debugPort),
+		HTTPAddr:    fmt.Sprintf("127.0.0.1:%d", httpPort),
 	}
 }
