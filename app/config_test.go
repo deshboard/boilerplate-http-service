@@ -58,7 +58,7 @@ func TestConfig(t *testing.T) {
 				"DEBUG":       "false",
 				"LOG_FORMAT":  "logfmt",
 			},
-			[]string{"service", "--debug-addr", ":10001", "--shutdown-timeout", "10s"},
+			[]string{"service", "--debug-addr", ":10001", "--shutdown-timeout", "10s", "--http-addr", ":8001"},
 			Config{},
 			Config{
 				Environment:     "test",
@@ -66,6 +66,7 @@ func TestConfig(t *testing.T) {
 				LogFormat:       log.LogfmtFormat.String(),
 				DebugAddr:       ":10001",
 				ShutdownTimeout: 10 * time.Second,
+				HTTPAddr:        ":8001",
 			},
 		},
 		"defaults": {
@@ -78,6 +79,7 @@ func TestConfig(t *testing.T) {
 				LogFormat:       log.JsonFormat.String(),
 				DebugAddr:       ":10000",
 				ShutdownTimeout: 15 * time.Second,
+				HTTPAddr:        ":8000",
 			},
 		},
 	}
