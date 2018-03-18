@@ -1,8 +1,8 @@
-hash: f8fd7a91f8695838a7e7235b4d20de19f28ee91db765b6c77358e5669d630a6d
-updated: 2018-02-04T04:14:13.901848699+01:00
+hash: 08c4979ededb0e1f379dba634eb3f1a460abf1c81f64e7874fe9b2aa4b1f2cac
+updated: 2018-03-18T12:10:53.075456+01:00
 imports:
 - name: github.com/DATA-DOG/godog
-  version: 4dc98b0e2b130c3c9d06868a050320e5b310d3e7
+  version: 0371765570d36374bef4ab9f62ed0491f0862a3c
   subpackages:
   - colors
   - gherkin
@@ -22,7 +22,7 @@ imports:
   subpackages:
   - log
 - name: github.com/goph/fxt
-  version: e211115d82bfa39a929b6de28455e36ef749d39f
+  version: b50b05f6619192ab5c978ca96f62925fe0a251b8
   subpackages:
   - debug
   - dev
@@ -124,13 +124,13 @@ imports:
   - transform
   - unicode/norm
 - name: gopkg.in/yaml.v2
-  version: 53feefa2559fb8dfa8d81baad31be332c97d6c77
+  version: 287cf08546ab5e7e37d55a84f7ed3fd1db036de5
 testImports:
 - name: github.com/davecgh/go-spew
-  version: 6d212800a42e8ab5c146b8ace3490ee17e5225f9
+  version: adab96458c51a58dc1783b3335dcce5461522e75
   subpackages:
   - spew
 - name: github.com/pmezard/go-difflib
-  version: d8ed2627bdf02c080bf22230dbb337003b7aba2d
+  version: 792786c7400a136282c1664665ae0a8db921c6c2
   subpackages:
   - difflib
