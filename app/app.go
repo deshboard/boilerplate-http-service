@@ -33,16 +33,22 @@ var Module = fx.Options(
 		fxdebug.NewStatusChecker,
 	),
 
+	// HTTP server
 	fx.Provide(
-		// HTTP server
 		mux.NewRouter,
-		NewService,
 		NewHandler,
 		NewHTTPConfig,
 		fxhttp.NewServer,
 
 		fxtracing.NewTracer,
 	),
+
+	fx.Provide(
+		NewService,
+	),
+
+	// Make sure to register this invoke function as the last,
+	// so tracer is injected into all routes.
 	fx.Invoke(fxgorilla.InjectTracer),
 )
 
