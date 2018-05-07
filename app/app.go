@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	web_fx "github.com/deshboard/boilerplate-http-service/pkg/driver/fx"
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
 	fxdebug "github.com/goph/fxt/debug"
@@ -43,9 +44,7 @@ var Module = fx.Options(
 		fxtracing.NewTracer,
 	),
 
-	fx.Provide(
-		NewService,
-	),
+	web_fx.Module,
 
 	// Make sure to register this invoke function as the last,
 	// so tracer is injected into all routes.
