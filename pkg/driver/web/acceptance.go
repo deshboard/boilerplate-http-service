@@ -1,6 +1,6 @@
 // +build acceptance
 
-package app
+package web
 
 import (
 	"github.com/DATA-DOG/godog"
@@ -8,7 +8,7 @@ import (
 )
 
 func RegisterSuite(runner *test.GodogRunner) {
-	runner.RegisterFeaturePath("../features")
+	runner.RegisterFeaturePath("../../features")
 	runner.RegisterFeatureContext(FeatureContext)
 }
 
