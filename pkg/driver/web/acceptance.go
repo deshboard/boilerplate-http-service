@@ -4,10 +4,10 @@ package web
 
 import (
 	"github.com/DATA-DOG/godog"
-	"github.com/goph/fxt/test"
+	"github.com/goph/fxt/testing"
 )
 
-func RegisterSuite(runner *test.GodogRunner) {
+func RegisterSuite(runner *fxtesting.GodogRunner) {
 	runner.RegisterFeaturePath("../../features")
 	runner.RegisterFeatureContext(FeatureContext)
 }

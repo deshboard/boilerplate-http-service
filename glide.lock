@@ -1,5 +1,5 @@
-hash: 6657836c0e6bbd8cc5dfad3c7bedb5331f5e85394c886576e0c1b8cd749acd48
-updated: 2018-05-05T00:32:17.790626+02:00
+hash: 613633479cda982c03829a22f6ed350c1889f2f58b51bef17e26aa4459f1e4ce
+updated: 2018-05-13T01:31:52.301457+02:00
 imports:
 - name: github.com/DATA-DOG/godog
   version: 0371765570d36374bef4ab9f62ed0491f0862a3c
@@ -9,7 +9,7 @@ imports:
 - name: github.com/fsnotify/fsnotify
   version: c2828203cd70a50dcccfb2761f8b1f8ceef9a8e9
 - name: github.com/go-kit/kit
-  version: ca4112baa34cb55091301bdc13b1420a122b1b9e
+  version: 4dc7be5d2d12881735283bcab7352178e190fc71
   subpackages:
   - log
   - log/level
@@ -22,20 +22,23 @@ imports:
   subpackages:
   - log
 - name: github.com/goph/fxt
-  version: e4233504d34871be95c12a649cae84ce87276c5d
+  version: eb299b7150bc0e7c19cbabe277643526e4c37e17
   subpackages:
+  - app/default
+  - app/http
   - debug
   - dev
   - errors
   - http
-  - http/gorilla
+  - http/gorilla/mux
+  - http/gorilla/mux/opentracing
   - log
-  - test
-  - test/acceptance
-  - test/fxtest
-  - test/is
-  - test/nettest
-  - tracing
+  - testing
+  - testing/acceptance
+  - testing/fxtest
+  - testing/is
+  - testing/nettest
+  - tracing/opentracing
 - name: github.com/goph/healthz
   version: 571dac1216f2f4f920458b3b93f5835ec1bd35c6
 - name: github.com/goph/nest

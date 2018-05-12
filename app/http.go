@@ -1,16 +1,6 @@
 package app
 
-import (
-	"net/http"
-
-	fxhttp "github.com/goph/fxt/http"
-	"github.com/gorilla/mux"
-)
-
-// NewHandler constructs a new HTTP handler instance.
-func NewHandler(router *mux.Router) http.Handler {
-	return router
-}
+import "github.com/goph/fxt/http"
 
 // NewHTTPConfig creates a http config.
 func NewHTTPConfig(config Config) *fxhttp.Config {
