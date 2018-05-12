@@ -20,10 +20,8 @@ var Module = fx.Options(
 	),
 
 	// HTTP server
-	fx.Provide(
-		fxmux.Module,
-		NewHTTPConfig,
-	),
+	fxmux.Module,
+	fx.Provide(NewHTTPConfig),
 
 	fx.Provide(fxopentracing.NewTracer),
 
